@@ -1,4 +1,5 @@
 import { Document, Types } from "mongoose";
+import { Account } from "./account.interface";
 import { Address } from "./address.interface";
 import { IQuery } from "./query.interface";
 
@@ -9,12 +10,12 @@ enum UserType {
 }
 
 export interface User extends Document, IQuery {
-    account?: string | Types.ObjectId;
+    account?: string | Types.ObjectId | Account;
     email?: string;
     firstName?: string;
     lastName?: string;
-    password: string;
-    address: Address;
-    type: UserType;
-    is_visible: boolean;
+    password?: string;
+    address?: Address;
+    type?: UserType;
+    is_visible?: boolean;
 }

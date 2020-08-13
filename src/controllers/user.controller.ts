@@ -2,13 +2,13 @@ import { Request, Response } from 'express';
 import { NativeError } from 'mongoose';
 import { ResponseJSON } from '../interfaces/response-json.interface';
 import { UserModel } from '../models/user.model';
-import { UserService } from "./user.service";
+import { UserService } from "../services/user.service";
 
 class UserController {
     public async get(req: Request, res: Response): Promise<Response> {
         let conditions = new UserService().setConditions(req);
         let select = new UserService().setSelect(req);
-        let populate_account = new UserService().setPopulate(<string>req.query.populate_account, 'id_account');
+        let populate_account = new UserService().setPopulate(<string>req.query.populate_account, 'account');
 
         const users = await UserModel
             .find(conditions)
@@ -20,7 +20,7 @@ class UserController {
 
     public async getById(req: Request, res: Response): Promise<Response> {
         let select = new UserService().setSelect(req);
-        let populate_account = new UserService().setPopulate(<string>req.query.populate_account, 'id_account');
+        let populate_account = new UserService().setPopulate(<string>req.query.populate_account, 'account');
 
         const user = await UserModel
             .findById(req.params.id)
@@ -59,6 +59,42 @@ class UserController {
 
         if (user) return res.json(<ResponseJSON>{ success: true, message: 'Successfully updated.' });
         else return res.json(<ResponseJSON>{ success: false, message: 'Register not found. It may be already deleted.' });
+    }
+
+    public async changePassword(req: Request, res: Response) {
+        if (req.body.new_password !== req.body.confirm_password)
+            res.json({ success: false, message: 'Passwords do not match.' });
+        if (!req.body.password)
+            res.json({ success: false, message: 'Password is required' });
+        else
+            UserModel.findById(req.params.id, async (error, user) => {
+                if (error) res.json({ success: false, message: 'Something went wrong.', error: error });
+                else if (!user) res.json({ success: false, message: 'User not registered.' });
+                else if (await user.comparePasswords(req.body.password)) {
+                    user.password = req.body.new_password;
+                    user.save(error => {
+                        if (error) res.json({ success: false, message: 'Something went wrong while saving the new password.' });
+                        else res.json({ success: true, message: 'Password changed successfully.' });
+                    });
+                } else res.json({ success: false, message: 'Invalid current password' });
+            });
+    }
+
+    public async changePasswordAdmin(req: Request, res: Response) {
+        if (req.body.new_password !== req.body.confirm_password)
+            res.json({ success: false, message: 'Passwords do not match.' });
+        else
+            UserModel.findById(req.params.id, async (error, user) => {
+                if (error) res.json({ success: false, message: 'Something went wrong.', error: error });
+                else if (!user) res.json({ success: false, message: 'User not registered.' });
+                else {
+                    user.password = req.body.new_password;
+                    user.save(error => {
+                        if (error) res.json({ success: false, message: 'Something went wrong while saving the new password.' });
+                        else res.json({ success: true, message: 'Password changed successfully.' });
+                    });
+                }
+            });
     }
 }
 

@@ -4,7 +4,7 @@ import { Attachment } from "./attachment.interface";
 import { IQuery } from "./query.interface";
 
 export interface Account extends Document, IQuery {
-    email: string;
+    master_email: string;
     status: string;
     logo: Attachment,
     address: Address,

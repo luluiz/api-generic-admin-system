@@ -7,7 +7,7 @@ import { AddressModel } from './address.model';
 
 export interface UserModel extends User, Address, Document {
     getFullName(): string;
-    comparePasswords(password: string): boolean;
+    comparePasswords(password: string): Promise<boolean>;
 };
 
 const UserSchema = new Schema({
@@ -32,8 +32,8 @@ UserSchema.methods.getFullName = (): string => {
     return (this.firstName.trim() + ' ' + this.lastName.trim())
 };
 
-UserSchema.methods.comparePasswords = (password: string) => {
-    return Bcrypt.compareSync(password, this.password);
+UserSchema.methods.comparePasswords = async (password: string) => {
+    return await Bcrypt.compareSync(password, this.password);
 };
 
 

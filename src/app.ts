@@ -1,7 +1,8 @@
-import express, { Router } from 'express';
 import cors from 'cors';
+import express from 'express';
 import mongoose, { ConnectionOptions } from 'mongoose';
 import { EnvConfig } from './env-config';
+import loggerMiddleware from './middlewares/logger.middleware';
 import { RouterAbstract } from './utils/router.abstract';
 
 class App {
@@ -11,8 +12,8 @@ class App {
     constructor(routes: RouterAbstract[]) {
         this.envConfig.load();
         this.express = express();
-        this.initMiddlewares();
         this.initDatabase();
+        this.initMiddlewares();
         this.initRoutes(routes);
     }
 
@@ -27,6 +28,7 @@ class App {
         this.express.use(express.urlencoded({ extended: true }));
         this.express.use(express.json());
         this.express.use(cors());
+        this.express.use(loggerMiddleware.log);
     }
 
     private initDatabase() {

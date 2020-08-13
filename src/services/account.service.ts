@@ -14,7 +14,7 @@ export class AccountService extends QueryService {
             let conditions: any = {};
 
             if (reqQuery._id) conditions._id = reqQuery._id;
-            if (reqQuery.email) conditions.email = { $regex: reqQuery.email, $options: 'i' };
+            if (reqQuery.master_email) conditions.master_email = { $regex: reqQuery.master_email, $options: 'i' };
             if (reqQuery.status) conditions.status = reqQuery.status;
             if (reqQuery.createdFrom && reqQuery.createdTo) conditions.created = {
                 $gte: Moment(new Date(reqQuery.createdFrom)).startOf('day').toDate(),

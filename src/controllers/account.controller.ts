@@ -3,7 +3,7 @@ import { NativeError } from 'mongoose';
 import { Account } from '../interfaces/account.interface';
 import { ResponseJSON } from '../interfaces/response-json.interface';
 import { AccountModel } from '../models/account.model';
-import { AccountService } from "./account.service";
+import { AccountService } from "../services/account.service";
 
 class AccountController {
     public async get(req: Request, res: Response): Promise<Response> {
