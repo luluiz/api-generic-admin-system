@@ -1,0 +1,18 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Passe o mouse para ver as descrições dos atributos existentes.
+    // Para obter mais informações, visite: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "API Admin SYS",
+            "program": "${workspaceFolder}\\server\\loader_api.js",
+            "args": [
+                "--tls-min-v1.0",
+                "${NODE_ENV: development}"
+            ],
+        }
+    ]
+}
