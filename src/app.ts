@@ -43,6 +43,8 @@ class App {
         let options: ConnectionOptions = {
             useNewUrlParser: true,
             useUnifiedTopology: true,
+            useFindAndModify: false,
+            useCreateIndex: true,
         };
 
         mongoose.connect(uri, options)

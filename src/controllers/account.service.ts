@@ -1,25 +1,21 @@
 import { Request } from 'express';
 import Moment from 'moment-timezone';
-import { User } from "../interfaces/user.interface";
+import { Account } from "../interfaces/account.interface";
 import { QueryService } from './query.service';
 
-export class UserService extends QueryService {
+export class AccountService extends QueryService {
     constructor() {
         super();
     }
 
     public setConditions(req: Request): any {
         try {
-            let reqQuery: User = req.query as any;
+            let reqQuery: Account = req.query as any;
             let conditions: any = {};
 
             if (reqQuery._id) conditions._id = reqQuery._id;
-            if (reqQuery.account) conditions.account = reqQuery.account;
             if (reqQuery.email) conditions.email = { $regex: reqQuery.email, $options: 'i' };
-            if (reqQuery.firstName) conditions.firstName = { $regex: reqQuery.firstName, $options: 'i' };
-            if (reqQuery.lastName) conditions.lastName = { $regex: reqQuery.lastName, $options: 'i' };
-            if (reqQuery.createdAt) conditions.createdAt = reqQuery.createdAt;
-            if (reqQuery.updatedAt) conditions.updatedAt = reqQuery.updatedAt;
+            if (reqQuery.status) conditions.status = reqQuery.status;
             if (reqQuery.createdFrom && reqQuery.createdTo) conditions.created = {
                 $gte: Moment(new Date(reqQuery.createdFrom)).startOf('day').toDate(),
                 $lte: Moment(new Date(reqQuery.createdTo)).endOf('day').toDate()
@@ -35,4 +31,6 @@ export class UserService extends QueryService {
             return {};
         }
     }
+
+
 }

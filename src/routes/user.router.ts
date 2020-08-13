@@ -9,11 +9,11 @@ export class UserRouter {
     }
 
     private initRoutes() {
-        this.router.get('/users', UserController.get);
-        this.router.get('/users/:id', UserController.getById);
-        this.router.post('/users', UserController.create);
-        this.router.put('/users', UserController.edit);
-        this.router.delete('/users', UserController.delete);
+        this.router.get('/user', UserController.get);
+        this.router.get('/user/:id', UserController.getById);
+        this.router.post('/user', UserController.create);
+        this.router.put('/user/:id', UserController.edit);
+        this.router.delete('/user/:id', UserController.delete);
     }
 
     public getRouter(): Router {

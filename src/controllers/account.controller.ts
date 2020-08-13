@@ -1,50 +1,51 @@
 import { Request, Response } from 'express';
 import { NativeError } from 'mongoose';
+import { Account } from '../interfaces/account.interface';
 import { ResponseJSON } from '../interfaces/response-json.interface';
-import { UserModel } from '../models/user.model';
-import { UserService } from "./user.service";
+import { AccountModel } from '../models/account.model';
+import { AccountService } from "./account.service";
 
-class UserController {
+class AccountController {
     public async get(req: Request, res: Response): Promise<Response> {
-        let conditions = new UserService().setConditions(req);
-        let select = new UserService().setSelect(req);
-        let populate_account = new UserService().setPopulate(<string>req.query.populate_account, 'id_account');
+        let conditions = new AccountService().setConditions(req);
+        let select = new AccountService().setSelect(req);
+        let populate_master_user = new AccountService().setPopulate(<string>req.query.populate_master_user, 'master_user');
 
-        const users = await UserModel
+        const users = await AccountModel
             .find(conditions)
             .select(select)
-            .populate(populate_account)
+            .populate(populate_master_user)
 
         return res.json(<ResponseJSON>{ success: true, data: users });
     }
 
     public async getById(req: Request, res: Response): Promise<Response> {
-        let select = new UserService().setSelect(req);
-        let populate_account = new UserService().setPopulate(<string>req.query.populate_account, 'id_account');
+        let select = new AccountService().setSelect(req);
+        let populate_master_user = new AccountService().setPopulate(<string>req.query.populate_master_user, 'master_user');
 
-        const user = await UserModel
+        const account = await AccountModel
             .findById(req.params.id)
             .select(select)
-            .populate(populate_account)
+            .populate(populate_master_user)
 
-        return res.json(<ResponseJSON>{ success: true, data: user });
+        return res.json(<ResponseJSON>{ success: true, data: account });
     }
 
     public async create(req: Request, res: Response): Promise<Response> {
-        const user = await UserModel
+        const account = await AccountModel
             .create(req.body)
             .catch(e => {
                 res.status(500).json(<ResponseJSON>{ success: false, message: 'Something went wrong. ' + e.message, error: e });
             });
 
-        if (user)
-            return res.json(<ResponseJSON>{ success: true, message: 'Successfully created.', data: user });
+        if (account)
+            return res.json(<ResponseJSON>{ success: true, message: 'Successfully created.', data: account });
     }
 
     public edit(req: Request, res: Response) {
-        UserModel
+        AccountModel
             .findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true })
-            .exec((error: NativeError, doc: UserModel) => {
+            .exec((error: NativeError, doc: Account) => {
                 if (error)
                     res.status(500).json(<ResponseJSON>{ success: false, message: 'Something went wrong. ' + error.message, error: error });
                 else if (!doc)
@@ -55,11 +56,11 @@ class UserController {
     }
 
     public async delete(req: Request, res: Response): Promise<Response> {
-        const user = await UserModel.findByIdAndDelete(req.params.id);
+        const account = await AccountModel.findByIdAndDelete(req.params.id);
 
-        if (user) return res.json(<ResponseJSON>{ success: true, message: 'Successfully updated.' });
+        if (account) return res.json(<ResponseJSON>{ success: true, message: 'Successfully updated.' });
         else return res.json(<ResponseJSON>{ success: false, message: 'Register not found. It may be already deleted.' });
     }
 }
 
-export default new UserController();
+export default new AccountController();
