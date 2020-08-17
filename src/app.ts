@@ -1,5 +1,6 @@
 import cors from 'cors';
 import express from 'express';
+import helmet from 'helmet';
 import mongoose, { ConnectionOptions } from 'mongoose';
 import { EnvConfig } from './env-config';
 import loggerMiddleware from './middlewares/logger.middleware';
@@ -28,6 +29,7 @@ class App {
         this.express.use(express.urlencoded({ extended: true }));
         this.express.use(express.json());
         this.express.use(cors());
+        this.express.use(helmet());
         this.express.use(loggerMiddleware.log);
     }
 
